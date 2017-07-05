@@ -1,5 +1,3 @@
-import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.Scanner;
 
 /**
@@ -7,43 +5,70 @@ import java.util.Scanner;
  */
 
 public class BattingStatistics {
+
+    private static Validator Validator = new Validator();
+
     public static void main(String[] args) {
 
         Scanner entry = new Scanner(System.in);
 
         System.out.println("Welcome to Batting Average Calculator!");
 
-        //System.out.print("\nEnter the number of batters: ");
-        //int numBatters = entry.nextInt();
+        String keepGoing = "y";
 
-        System.out.print("\nEnter number of times at bat: ");
-        int numAtBats = entry.nextInt();
+        while (keepGoing.equalsIgnoreCase("y")) {
 
-        int[] resultAtBat = new int[numAtBats];
+            // Get Number of Batters
+            String numberBattersPrompt = "\nEnter the number of batters: ";
+            String invalidNumberBattersPrompt = "\nInvalid entry. Please enter 1 or more batters.";
+            int numBatters = Validator.getInt(entry, numberBattersPrompt, invalidNumberBattersPrompt, 1, Integer.MAX_VALUE);
 
-        System.out.println("\n0=out, 1=single, 2=double, 3=triple, 4=home run");
+            int[] baseEarned = new int[numBatters];
+            int[] numBasesEarned = new int[numBatters];
+            int[] numAtBats = new int[numBatters];
 
-        int baseEarned = 0;
-        int numBasesEarned = 0;
-        double battingAverage = 0.0;
-        double sluggingAverage = 0.0;
+            int[][] battingResults = new int[numBatters][];
 
-        for (int i = 0; i < resultAtBat.length; i++) {
-            System.out.print("Result for at-bat " + i + ": "); //Receive bases
-            resultAtBat[i] = entry.nextInt();
+            double[] battingAverage = new double[numBatters];
+            double[] sluggingPercentage = new double[numBatters];
 
-            if (resultAtBat[i] >= 1) {
-                baseEarned++;
+            for (int i = 0; i < numBatters; i++) {
+                String numberAtBatsPrompt = String.format("\nEnter number of times batter %d is at bat: ", i + 1);
+                String invalidAtBatsPrompt = "\nInvalid entry. Please enter 1 or more at-bats.";
+                numAtBats[i] = Validator.getInt(entry, numberAtBatsPrompt, invalidAtBatsPrompt, 1, Integer.MAX_VALUE);
+
+                battingResults[i] = new int[numAtBats[i]];
+
+                System.out.println("\n0=out, 1=single, 2=double, 3=triple, 4=home run");
+
+                for (int j = 0; j < numAtBats[i]; j++) {
+                    String resultAtBatPrompt = String.format("Result for batter %d at-bat %d: ", i + 1, j + 1); //Receive bases
+                    String invalidResultAtBatPrompt = "\nInvalid entry. Please enter 0, 1, 2, 3, or 4 bases.";
+                    battingResults[i][j] = Validator.getInt(entry, resultAtBatPrompt, invalidResultAtBatPrompt, 0, 4);
+
+                    if (battingResults[i][j] >= 1) {
+                        baseEarned[i]++;
+                    }
+                    numBasesEarned[i] += battingResults[i][j];
+                }
+
+                battingAverage[i] = (double) baseEarned[i] / numAtBats[i];
+                sluggingPercentage[i] = (double) numBasesEarned[i] / numAtBats[i];
             }
-            numBasesEarned += resultAtBat[i];
+            entry.nextLine();
+
+            System.out.println();
+
+            for (int k = 0; k < battingResults.length; k++) {
+                System.out.printf("Batter %d average: %.3f   slugging percentage: %.3f\n", k + 1, battingAverage[k], sluggingPercentage[k]); //output batting average
+            }
+
+            System.out.println();
+
+            String anotherBatterPrompt = "Would you like to calculate more? (y/n): ";
+            String invalidAnotherBatterPrompt = "\nInvalid entry. Please specify y or n.";
+            keepGoing = Validator.getString(entry, anotherBatterPrompt, invalidAnotherBatterPrompt);
         }
-
-        battingAverage = (double) baseEarned / numAtBats;
-        sluggingAverage = (double) numBasesEarned / numAtBats;
-
-        DecimalFormat formatter = new DecimalFormat("#.000");
-
-        System.out.printf("\nBatting average: " + formatter.format(battingAverage)); //output battingAverage
-        System.out.printf("Slugging Percentage: " + formatter.format(sluggingAverage)); //output sluggingAverage
+        System.out.println("\nGood-bye");
     }
 }
