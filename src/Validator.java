@@ -59,38 +59,4 @@ public class Validator {
         }
         return i;
     }
-
-    public static double getDouble(Scanner entry, String prompt) {
-        double d = 0;
-        boolean isValid = false;
-        while (isValid == false) {
-            System.out.print(prompt);
-            if (entry.hasNextDouble()) {
-                d = entry.nextDouble();
-                isValid = true;
-            } else {
-                System.out.println("Error! Invalid decimal value. Try again.");
-            }
-            entry.nextLine();  // discard any other data entered on the line
-        }
-        return d;
-    }
-
-    public static double getDouble(Scanner entry, String prompt,
-                                   double min, double max) {
-        double d = 0;
-        boolean isValid = false;
-        while (isValid == false) {
-            d = getDouble(entry, prompt);
-            if (d < min)
-                System.out.println(
-                        "Error! Number must be " + min + " or greater.");
-            else if (d > max)
-                System.out.println(
-                        "Error! Number must be " + max + " or less.");
-            else
-                isValid = true;
-        }
-        return d;
-    }
 }
