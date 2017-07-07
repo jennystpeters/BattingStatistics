@@ -36,7 +36,6 @@ public class Validator {
             if (entry.hasNextInt()) {
                 i = entry.nextInt();
                 isValid = true;
-                return i;
             } else {
                 System.out.println("Error! Invalid integer value. Try again.");
             }
